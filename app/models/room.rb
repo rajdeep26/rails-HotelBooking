@@ -1,5 +1,5 @@
 class Room < ActiveRecord::Base
-  has_one :room_type
+  belongs_to :room_type
   belongs_to :booking
 
   validates :adult, presence: true

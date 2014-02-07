@@ -1,5 +1,5 @@
 class RoomType < ActiveRecord::Base
-  belongs_to :room
+  has_many :room
 
   validates :name, presence: true
   validates :desc, presence: true
