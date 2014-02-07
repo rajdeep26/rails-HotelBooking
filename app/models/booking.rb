@@ -1,5 +1,5 @@
 class Booking < ActiveRecord::Base
-  has_many :room
+  has_many :rooms
   has_one :contact
 
   validates :amount, presence: true

@@ -12,7 +12,7 @@ class RoomTypesController < ApplicationController
 
   # GET /room_types/1
   # GET /room_types/1.json
-  def show
+    def show
     @room_type = RoomType.find(params[:id])
 
     respond_to do |format|
@@ -41,16 +41,11 @@ class RoomTypesController < ApplicationController
   # POST /room_types.json
   def create
     @room_type = RoomType.new(params[:room_type])
-
-    respond_to do |format|
       if @room_type.save
-        format.html { redirect_to @room_type, notice: 'Room type was successfully created.' }
-        format.json { render json: @room_type, status: :created, location: @room_type }
+        redirect_to @room_type, notice: 'Room type was successfully created.'
       else
-        format.html { render action: "new" }
-        format.json { render json: @room_type.errors, status: :unprocessable_entity }
+        render action: "new" 
       end
-    end
   end
 
   # PUT /room_types/1
