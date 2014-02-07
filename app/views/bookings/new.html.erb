@@ -1,0 +1,71 @@
+<h1>New booking</h1>
+
+<%= form_for(@booking) do |booking| %>
+  <% if @booking.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@booking.errors.count, "error") %> prohibited this booking from being saved:</h2>
+
+      <ul>
+      <% @booking.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= booking.label :booking_code %><br />
+    <%= booking.number_field :booking_code %>
+  </div>
+  <h3>Room Details</h3>
+  <%= booking.fields_for :room do |room_fields| %>
+    <div class="field">
+      <%= room_fields.label :adult %><br/>
+      <%= room_fields.number_field :adult %>
+    </div>
+    <div class="field">
+      <%= room_fields.label :children %><br/>
+      <%= room_fields.number_field :children %>
+    </div>
+    <div class="field">
+      <%= room_fields.label :room_type_id %><br/>
+      <%= room_fields.number_field :room_type_id %>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= booking.label :amount %><br />
+    <%= booking.number_field :amount %>
+  </div>
+  <div class="field">
+    <%= booking.label :check_in %><br />
+    <%= booking.date_select :check_in %>
+  </div>
+  <div class="field">
+    <%= booking.label :check_out %><br />
+    <%= booking.date_select :check_out %>
+  </div>
+
+  <h3>Contact details</h3>
+    <%= booking.fields_for :contact do |contact_fields| %>
+    <div class="field">
+      <%= contact_fields.label :name %><br/>
+      <%= contact_fields.text_field :name %>
+    </div>
+    <div class="field">
+      <%= contact_fields.label :email %><br/>
+      <%= contact_fields.text_field :email %>
+    </div>
+    <div class="field">
+      <%= contact_fields.label :phone %><br/>
+      <%= contact_fields.text_field :phone %>
+    </div>
+  <% end %>
+
+  <div class="actions">
+    <%= booking.submit %>
+  </div>
+<% end %>
+
+
+<%= link_to 'Back', bookings_path %>

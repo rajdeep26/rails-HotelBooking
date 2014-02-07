@@ -1,0 +1,13 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  booking_code: 1
+  amount: 1
+  check_in: 2014-02-07
+  check_out: 2014-02-07
+
+two:
+  booking_code: 1
+  amount: 1
+  check_in: 2014-02-07
+  check_out: 2014-02-07

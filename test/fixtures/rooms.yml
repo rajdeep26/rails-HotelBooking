@@ -1,0 +1,13 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  adult: 1
+  children: 1
+  booking_id: 1
+  room_type_id: 1
+
+two:
+  adult: 1
+  children: 1
+  booking_id: 1
+  room_type_id: 1
