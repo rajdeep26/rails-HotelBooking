@@ -42,11 +42,13 @@ class BookingsController < ApplicationController
   # POST /bookings.json
   def create
     @booking = Booking.new(params[:booking].except(:room,:contact))
-    @rooms_with_given_room_type = Room.where(:room_type_id => params[:booking][:room][:room_type_id])
+    @rooms_with_given_room_type = Room.where(:room_type_id => params[:booking][:room][:room_type_id]).includes(:booking)
     @occupied = 0
-    @rooms_with_given_room_type.each.with_index(1) do |room, count|
-      if (Date.civil(params["booking"]["check_in(1i)"].to_i, params["booking"]["check_in(2i)"].to_i, params["booking"]["check_in(3i)"].to_i)..Date.civil(params["booking"]["check_out(1i)"].to_i, params["booking"]["check_out(2i)"].to_i, params["booking"]["check_out(3i)"].to_i)).overlaps?(room.booking.check_in..room.booking.check_out)
-        @occupied = count
+    if !@rooms_with_given_room_type.blank?
+      @rooms_with_given_room_type.each.with_index(1) do |room, count|
+        if (Date.civil(params["booking"]["check_in(1i)"].to_i, params["booking"]["check_in(2i)"].to_i, params["booking"]["check_in(3i)"].to_i)..Date.civil(params["booking"]["check_out(1i)"].to_i, params["booking"]["check_out(2i)"].to_i, params["booking"]["check_out(3i)"].to_i)).overlaps?(room.booking.check_in..room.booking.check_out)
+          @occupied = count
+        end
       end
     end
     @total_rooms = RoomType.where(:id => params[:booking][:room][:room_type_id]).select("room_count")
