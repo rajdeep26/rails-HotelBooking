@@ -31,7 +31,7 @@
     </div>
     <div class="field">
       <%= room_fields.label :room_type_id %><br/>
-      <%= room_fields.number_field :room_type_id %>
+      <%= select("booking[room]", "room_type_id", options_for_select(@room_types.collect {|r| [ r.name, r.id ] } , 4)) %>
     </div>
   <% end %>
 

@@ -1,0 +1,57 @@
+<h1>New Booking</h1>
+
+<%= form_for(@booking) do |booking| %><% if @booking.errors.any? %>
+  <div id="error_explanation">
+    <h2><%= pluralize(@booking.errors.count, "error") %> prohibited this booking from being saved:</h2>
+
+    <ul>
+      <% @booking.errors.full_messages.each do |msg| %>
+      <li><%= msg %></li>
+      <% end %>
+    </ul>
+  </div>
+  <% end %>
+
+   <div class="field">
+    <%= booking.label :booking_code %><br />
+    <%= booking.number_field :booking_code %>
+  </div>
+  <div class="field">
+    <%= booking.label :check_in %><br />
+    <%= booking.date_select :check_in %>
+  </div>
+  <div class="field">
+    <%= booking.label :check_out %><br />
+    <%= booking.date_select :check_out %>
+  </div>
+  <div class="field">
+    <label for="rooms">Rooms : </label>
+    <select id="rooms" name="rooms">
+      <option value="1" selected="selected">1</option>
+      <option value="2">2</option>
+      <option value="3">3</option>
+      <option value="4">4</option>
+      <option value="5">5</option>
+    </select>
+  </div>
+
+   <h3>Contact details</h3>
+    <%= booking.fields_for :contact do |contact_fields| %>
+    <div class="field">
+      <%= contact_fields.label :name %><br/>
+      <%= contact_fields.text_field :name %>
+    </div>
+    <div class="field">
+      <%= contact_fields.label :email %><br/>
+      <%= contact_fields.text_field :email %>
+    </div>
+    <div class="field">
+      <%= contact_fields.label :phone %><br/>
+      <%= contact_fields.text_field :phone %>
+    </div>
+  <% end %>
+
+  <div class="actions">
+    <%= booking.submit %>
+  </div>
+<% end %>

@@ -28,7 +28,7 @@ class BookingsController < ApplicationController
     @room_types = RoomType.all
 
     respond_to do |format|
-      format.html # new.html.erb
+      format.html { render action: 'new1' } # new1.html.erb
       format.json { render json: @booking }
     end
   end
@@ -40,35 +40,53 @@ class BookingsController < ApplicationController
 
   # POST /bookings
   # POST /bookings.json
+  # def create
+  #   @booking = Booking.new(params[:booking].except(:room,:contact))
+  #   @rooms_with_given_room_type = Room.where(:room_type_id => params[:booking][:room][:room_type_id]).includes(:booking)
+  #   @occupied = 0
+  #   if !@rooms_with_given_room_type.blank?
+  #     @rooms_with_given_room_type.each.with_index(1) do |room, count|
+  #       if (Date.civil(params["booking"]["check_in(1i)"].to_i, params["booking"]["check_in(2i)"].to_i, params["booking"]["check_in(3i)"].to_i)..Date.civil(params["booking"]["check_out(1i)"].to_i, params["booking"]["check_out(2i)"].to_i, params["booking"]["check_out(3i)"].to_i)).overlaps?(room.booking.check_in..room.booking.check_out)
+  #         @occupied = count
+  #       end
+  #     end
+  #   end
+  #   @total_rooms = RoomType.where(:id => params[:booking][:room][:room_type_id]).select("room_count")
+  #   if (@total_rooms[0][:room_count] > @occupied)
+  #     if @booking.save
+  #       @room = @booking.rooms.create(params[:booking][:room])
+  #       @contact = @booking.create_contact(params[:booking][:contact])
+  #       if (@room.save and @contact.save)
+  #         redirect_to @booking, notice: 'Booking was successfully created.'
+  #       else
+  #         @room.destroy
+  #         @contact.destroy
+  #         @booking.destroy
+  #         render action: "new"
+  #       end
+  #     else
+  #       render action: "new"
+  #     end
+  #   else
+  #     flash[:notice] = "Rooms of the selected type are Unavilable for the selected dates!"
+  #     redirect_to :back
+  #   end
+  # end
+
   def create
-    @booking = Booking.new(params[:booking].except(:room,:contact))
-    @rooms_with_given_room_type = Room.where(:room_type_id => params[:booking][:room][:room_type_id]).includes(:booking)
-    @occupied = 0
-    if !@rooms_with_given_room_type.blank?
-      @rooms_with_given_room_type.each.with_index(1) do |room, count|
-        if (Date.civil(params["booking"]["check_in(1i)"].to_i, params["booking"]["check_in(2i)"].to_i, params["booking"]["check_in(3i)"].to_i)..Date.civil(params["booking"]["check_out(1i)"].to_i, params["booking"]["check_out(2i)"].to_i, params["booking"]["check_out(3i)"].to_i)).overlaps?(room.booking.check_in..room.booking.check_out)
-          @occupied = count
-        end
-      end
-    end
-    @total_rooms = RoomType.where(:id => params[:booking][:room][:room_type_id]).select("room_count")
-    if (@total_rooms[0][:room_count] > @occupied)
-      if @booking.save
-        @room = @booking.rooms.create(params[:booking][:room])
-        @contact = @booking.create_contact(params[:booking][:contact])
-        if (@room.save and @contact.save)
-          redirect_to @booking, notice: 'Booking was successfully created.'
-        else
-          @room.destroy
-          @contact.destroy
-          @booking.destroy
-          render action: "new"
-        end
+    @booking =  Booking.new(params[:booking].except(:contact))
+    logger.debug(@booking.id)
+    @booking.amount = 0
+    if @booking.save
+      @contact = @booking.create_contact(params[:booking][:contact])
+      if @contact.save
+        redirect_to "/bookings/#{@booking.id}/rooms/new"
       else
-        render action: "new"
+        @booking.destroy
+        render action: 'new1'
       end
     else
-      render action: "new", notice: 'No Room Available.'
+      render action: 'new1'
     end
   end
 
@@ -99,4 +117,26 @@ class BookingsController < ApplicationController
       format.json { head :ok }
     end
   end
+
+  def rooms
+    @booking = Booking.find(params[:id])
+    @rooms = @booking.rooms.includes(:room_type)
+  end
+
+  def new_room
+    @booking = Booking.find(params[:id])
+    @room_types = RoomType.all
+  end
+
+  def create_room
+    @booking = Booking.find(params[:id])
+    @room = @booking.rooms.create("adult"=>params[:adult], "children" => params[:children], "room_type_id"=> params[:room_type_id])
+    if @room.save
+      redirect_to "/bookings/#{params[:id]}/rooms", notice: 'Booking created successfully!'
+    else
+      @room_types = RoomType.all
+      redirect_to "/bookings/#{params[:id]}/rooms/new"
+    end
+  end
+
 end

@@ -1,6 +1,6 @@
 class Booking < ActiveRecord::Base
-  has_many :rooms
-  has_one :contact
+  has_many :rooms, dependent: :destroy
+  has_one :contact, dependent: :destroy
 
   validates :amount, presence: true
   validates :check_in, presence: true

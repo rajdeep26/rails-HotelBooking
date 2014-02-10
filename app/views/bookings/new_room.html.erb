@@ -1,0 +1,19 @@
+<h1>Room Details</h1>
+
+<form action="/bookings/<%= @booking.id %>/rooms" method="post">
+  <div class="field">
+    <label for="adults">Adult : </label>
+    <input id="adults" name="adult" type="number">
+  </div>
+  <div class="field">
+    <label for="children">Children : </label>
+    <input id="children" name="children" type="number">
+  </div>
+  <div class="field">
+    <label for="room_type_id">Room Type : </label>
+    <%= select_tag("room_type_id", options_for_select(@room_types.collect {|r| [ r.name, r.id ] } , 4)) %>
+  </div>
+  <button type="submit">Submit</button>
+</form>
+
+
