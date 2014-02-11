@@ -1,3 +1,4 @@
+<p id="notice"><%= notice %></p>
 <h1>Room Details</h1>
 
 <form action="/bookings/<%= @booking_id %>/rooms" method="post">
@@ -5,16 +6,18 @@
 <h3>Room <%= i+1 %></h3>
   <div class="field">
     <label for="adults">Adult : </label>
-    <input id="adults" name="rooms[][adult]" type="number">
+    <input id="adults" name="rooms[][adult]" type="number" required>
   </div>
   <div class="field">
     <label for="children">Children : </label>
-    <input id="children" name="rooms[][children]" type="number">
+    <input id="children" name="rooms[][children]" type="number" required>
   </div>
   <div class="field">
     <label for="room_type_id">Room Type : </label>
     <%= select_tag("rooms[][room_type_id]", options_for_select(@room_types.collect {|r| [ r.name, r.id ] } , 4)) %>
   </div>
 <% end %>
+  
+  <input type="hidden" id="no_of_rooms" name="no_of_rooms" value="<%= params[:no_of_rooms] %>">
   <button type="submit">Submit</button>
 </form>

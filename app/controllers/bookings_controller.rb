@@ -125,20 +125,41 @@ class BookingsController < ApplicationController
 
   def new_room
     @booking_id = params[:booking_id]
-    @no_of_rooms = params[:no_of_rooms]
     @room_types = RoomType.all
   end
 
   def create_room
     @booking = Booking.find(params[:booking_id])
-    params[:rooms].each do | room|
-      @room = @booking.rooms.create(room)
-    end
-    if @room.save
-      redirect_to "/bookings/#{params[:booking_id]}/rooms", notice: 'Booking created successfully!'
-    else
-      @room_types = RoomType.all
-      redirect_to "/bookings/#{params[:booking_id]}/rooms/new"
+    @room_types = RoomType.all
+    if !params[:rooms].blank?
+      params[:rooms].each_with_index do |new_room, i|
+        @room_types.each do |room_type|
+          if room_type.id == new_room[:room_type_id].to_i
+            @total_rooms = room_type.room_count
+          end
+        end
+        logger.debug "Total rooms --> #{@total_rooms.inspect}"
+        @rooms_with_given_room_type = Room.where(:room_type_id => new_room[:room_type_id]).includes(:booking)
+        @occupied = 0
+        if !@rooms_with_given_room_type.blank?
+          @rooms_with_given_room_type.each.with_index(1) do |room, count|
+            if (@booking.check_in..@booking.check_out).overlaps?(room.booking.check_in..room.booking.check_out)
+              @occupied = count
+            end
+          end
+        end
+        logger.debug "Occupied rooms --> #{@occupied.inspect}"
+        if @total_rooms > @occupied
+          @room = @booking.rooms.create(new_room)
+          if i == params[:no_of_rooms].to_i-1
+             redirect_to "/bookings/#{params[:booking_id]}/rooms", notice: 'Booking created successfully!'
+          end
+        else
+          @room_types = RoomType.all
+          redirect_to "/bookings/#{params[:booking_id]}/rooms/new?no_of_rooms=#{params[:no_of_rooms].to_i-i}", notice: "#{i} Rooms Booked. Cannot Book remaining rooms because Rooms of selected room types are Booked"
+          break
+        end
+      end
     end
   end
 
