@@ -80,7 +80,7 @@ class BookingsController < ApplicationController
     if @booking.save
       @contact = @booking.create_contact(params[:booking][:contact])
       if @contact.save
-        redirect_to "/bookings/#{@booking.id}/rooms/new"
+        redirect_to "/bookings/#{@booking.id}/rooms/new?no_of_rooms=#{params[:rooms]}"
       else
         @booking.destroy
         render action: 'new1'
@@ -119,23 +119,26 @@ class BookingsController < ApplicationController
   end
 
   def rooms
-    @booking = Booking.find(params[:id])
+    @booking = Booking.find(params[:booking_id])
     @rooms = @booking.rooms.includes(:room_type)
   end
 
   def new_room
-    @booking = Booking.find(params[:id])
+    @booking_id = params[:booking_id]
+    @no_of_rooms = params[:no_of_rooms]
     @room_types = RoomType.all
   end
 
   def create_room
-    @booking = Booking.find(params[:id])
-    @room = @booking.rooms.create("adult"=>params[:adult], "children" => params[:children], "room_type_id"=> params[:room_type_id])
+    @booking = Booking.find(params[:booking_id])
+    params[:rooms].each do | room|
+      @room = @booking.rooms.create(room)
+    end
     if @room.save
-      redirect_to "/bookings/#{params[:id]}/rooms", notice: 'Booking created successfully!'
+      redirect_to "/bookings/#{params[:booking_id]}/rooms", notice: 'Booking created successfully!'
     else
       @room_types = RoomType.all
-      redirect_to "/bookings/#{params[:id]}/rooms/new"
+      redirect_to "/bookings/#{params[:booking_id]}/rooms/new"
     end
   end
 
