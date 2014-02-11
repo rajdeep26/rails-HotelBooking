@@ -1,4 +1,4 @@
-
+<h1>Booking Details</h1>
 <p>
   <b>Booking code:</b>
   <%= @booking.booking_code %>
@@ -18,8 +18,35 @@
   <b>Check out:</b>
   <%= @booking.check_out %>
 </p>
+<br/>
+<h2>Booked Rooms</h2>
 
-<h4><%= link_to 'Show Booked Rooms', booking_path(@booking)+"/rooms"%></h4>
+<table>
+  <tr>
+    <th>Adults</th>
+    <th>Children</th>
+    <th>Booking ID</th>
+    <th>Room Type</th>
+    <th></th>
+    <th></th>
+    <th></th>
+  </tr>
+
+<% @rooms.each do |room| %>
+  <tr>
+    <td><%= room.adult %></td>
+    <td><%= room.children %></td>
+    <td><%= room.booking_id %></td>
+    <td><%= room.room_type.name %></td>
+    <td><%= link_to 'Show', room %></td>
+    <td><%= link_to 'Edit', edit_room_path(room) %></td>
+    <td><%= link_to 'Destroy', room, confirm: 'Are you sure?', method: :delete %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+
 
 <%= link_to 'Edit', edit_booking_path(@booking) %> |
 <%= link_to 'Back', bookings_path %>
