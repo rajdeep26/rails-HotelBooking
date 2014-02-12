@@ -29,7 +29,7 @@ class BookingsController < ApplicationController
     @room_types = RoomType.all
 
     respond_to do |format|
-      format.html { render action: 'new1' } # new1.html.erb
+      format.html { render action: 'new' } # new.html.erb
       format.json { render json: @booking }
     end
   end
@@ -84,10 +84,10 @@ class BookingsController < ApplicationController
         redirect_to "/bookings/#{@booking.id}/rooms/new?no_of_rooms=#{params[:rooms]}"
       else
         @booking.destroy
-        render action: 'new1'
+        render action: 'new'
       end
     else
-      render action: 'new1'
+      render action: 'new'
     end
   end
 
