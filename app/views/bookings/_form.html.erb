@@ -27,6 +27,34 @@
     <%= f.label :check_out %><br />
     <%= f.date_select :check_out %>
   </div>
+
+  <div class="field">
+    <label for="rooms">Rooms : </label>
+    <select id="rooms" name="rooms">
+      <option value="1" selected="selected">1</option>
+      <option value="2">2</option>
+      <option value="3">3</option>
+      <option value="4">4</option>
+      <option value="5">5</option>
+    </select>
+  </div>
+
+  <h3>Contact details</h3>
+    <%= f.fields_for :contact do |contact_fields| %>
+    <div class="field">
+      <%= contact_fields.label :name %><br/>
+      <%= contact_fields.text_field :name %>
+    </div>
+    <div class="field">
+      <%= contact_fields.label :email %><br/>
+      <%= contact_fields.text_field :email %>
+    </div>
+    <div class="field">
+      <%= contact_fields.label :phone %><br/>
+      <%= contact_fields.text_field :phone %>
+    </div>
+  <% end %>
+
   <div class="actions">
     <%= f.submit %>
   </div>

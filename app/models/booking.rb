@@ -5,4 +5,6 @@ class Booking < ActiveRecord::Base
   validates :amount, presence: true
   validates :check_in, presence: true
   validates :check_out, presence: true
+
+  accepts_nested_attributes_for :contact, :rooms
 end
