@@ -1,6 +1,7 @@
 <h1>New Booking</h1>
 
-<%= form_for(@booking) do |booking| %><% if @booking.errors.any? %>
+<%= form_for(@booking) do |booking| %>
+<% if @booking.errors.any? %>
   <div id="error_explanation">
     <h2><%= pluralize(@booking.errors.count, "error") %> prohibited this booking from being saved:</h2>
 
@@ -12,7 +13,7 @@
   </div>
   <% end %>
 
-   <div class="field">
+  <div class="field">
     <%= booking.label :booking_code %><br />
     <%= booking.number_field :booking_code %>
   </div>
@@ -24,19 +25,9 @@
     <%= booking.label :check_out %><br />
     <%= booking.date_select :check_out %>
   </div>
-  <div class="field">
-    <label for="rooms">Rooms : </label>
-    <select id="rooms" name="rooms">
-      <option value="1" selected="selected">1</option>
-      <option value="2">2</option>
-      <option value="3">3</option>
-      <option value="4">4</option>
-      <option value="5">5</option>
-    </select>
-  </div>
 
-   <h3>Contact details</h3>
-    <%= booking.fields_for :contact do |contact_fields| %>
+  <h3>Contact details</h3>
+  <%= booking.fields_for :contact do |contact_fields| %>
     <div class="field">
       <%= contact_fields.label :name %><br/>
       <%= contact_fields.text_field :name %>
@@ -51,6 +42,34 @@
     </div>
   <% end %>
 
+  <!-- only if action=add_room -->
+  <% if !@no_of_rooms.blank? %>
+    <h2>Room Details</h2>
+    <% @no_of_rooms.times do |i|%>
+    <h3>Room <%= i+1 %></h3>
+      <div class="field">
+        <label for="adults">Adult : </label>
+        <input id="adults" name="rooms[][adult]" type="number" value="<%= params[:rooms][i][:adult]%>" >
+      </div>
+      <div class="field">
+        <label for="children">Children : </label>
+        <input id="children" name="rooms[][children]" type="number" value="<%= params[:rooms][i][:children]%>" >
+      </div>
+      <div class="field">
+        <label for="room_type_id">Room Type : </label>
+        <%= select_tag("rooms[][room_type_id]", options_for_select(@room_types.collect {|r| [ r.name, r.id ] } ,  params[:rooms][i][:room_type_id])) %>
+      </div>
+    <% end %>
+  <% end%>
+
+  <% if params[:action] == 'add_room' %>
+    <h3 id="newroom" >New Room</h3>
+    <%= render 'addroom'%>
+  <% end %>
+  
+  <button type="submit" formaction="/bookings/new?action=add_room#newroom">Add Room</button>
+
+  <br/> <br/>
   <div class="actions">
     <%= booking.submit %>
   </div>

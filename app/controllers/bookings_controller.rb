@@ -26,6 +26,7 @@ class BookingsController < ApplicationController
   # GET /bookings/new.json
   def new
     @booking = Booking.new
+    @booking.build_contact
     @room_types = RoomType.all
 
     respond_to do |format|
@@ -37,21 +38,40 @@ class BookingsController < ApplicationController
   # GET /bookings/1/edit
   def edit
     @booking = Booking.find(params[:id])
+    @booking.build_contact if @booking.contact.nil?
   end
 
   # POST /bookings
   # POST /bookings.json
   def create
-    @booking =  Booking.new(params[:booking].except(:contact))
+    @booking =  Booking.new(params[:booking])
+    @room_types = RoomType.all
     logger.debug(@booking.id)
     @booking.amount = 0
     if @booking.save
-      @contact = @booking.create_contact(params[:booking][:contact])
-      if @contact.save
-        redirect_to "/bookings/#{@booking.id}/rooms/new?no_of_rooms=#{params[:rooms]}"
+      if !params[:rooms].blank?
+        params[:rooms].each_with_index do |new_room, i|
+          @room_type = @room_types.detect {|room_type| room_type.id == new_room[:room_type_id].to_i }
+          @rooms_with_given_room_type = Room.where(:room_type_id => new_room[:room_type_id]).includes(:booking)
+          @occupied = 0
+          if !@rooms_with_given_room_type.blank?
+            @occupied = @rooms_with_given_room_type.count {|room| (@booking.check_in..@booking.check_out).overlaps?(room.booking.check_in..room.booking.check_out) }
+          end
+          if @room_type.room_count > @occupied
+            @room = @booking.rooms.create(new_room)
+            if i == params[:rooms].count-1
+              logger.info "Completed booking all rooms"
+               redirect_to "/bookings/#{@booking.id}", notice: 'Booking created successfully!'
+            end
+          else
+            logger.info "#{params[:rooms].count-i} rooms cannot be booked"
+            redirect_to "/bookings/#{@booking.id}", notice: "#{i} Rooms Booked. Cannot Book remaining rooms because Rooms of selected room types are Booked "
+            break
+          end
+        end
       else
         @booking.destroy
-        render action: 'new'
+        redirect_to bookings_path
       end
     else
       render action: 'new'
@@ -86,39 +106,16 @@ class BookingsController < ApplicationController
     end
   end
 
-  def rooms
-    @booking = Booking.find(params[:booking_id])
-    @rooms = @booking.rooms.includes(:room_type)
-  end
-
-  def new_room
-    @booking_id = params[:booking_id]
-    @room_types = RoomType.all
-  end
-
-  def create_room
-    @booking = Booking.find(params[:booking_id])
+  # POST /bookings/:booking_id/new
+  def add_room
+    @booking = Booking.new(params[:booking])
     @room_types = RoomType.all
     if !params[:rooms].blank?
-      params[:rooms].each_with_index do |new_room, i|
-        @room_type = @room_types.detect {|room_type| room_type.id == new_room[:room_type_id].to_i }
-        @rooms_with_given_room_type = Room.where(:room_type_id => new_room[:room_type_id]).includes(:booking)
-        @occupied = 0
-        if !@rooms_with_given_room_type.blank?
-          @occupied = @rooms_with_given_room_type.count {|room| (@booking.check_in..@booking.check_out).overlaps?(room.booking.check_in..room.booking.check_out) }
-        end
-        if @room_type.room_count > @occupied
-          @room = @booking.rooms.create(new_room)
-          if i == params[:no_of_rooms].to_i-1
-             redirect_to "/bookings/#{params[:booking_id]}/rooms", notice: 'Booking created successfully!'
-          end
-        else
-          @room_types = RoomType.all
-          redirect_to "/bookings/#{params[:booking_id]}/rooms/new?no_of_rooms=#{params[:no_of_rooms].to_i-i}", notice: "#{i} Rooms Booked. Cannot Book remaining rooms because Rooms of selected room types are Booked"
-          break
-        end
-      end
+      @no_of_rooms = params[:rooms].count
+    else
+      @no_of_rooms = nil
     end
+    render 'new'
   end
 
 end

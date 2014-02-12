@@ -1,0 +1,12 @@
+<div class="field">
+  <label for="adults">Adult : </label>
+  <input id="adults" name="rooms[][adult]" type="number" >
+</div>
+<div class="field">
+  <label for="children">Children : </label>
+  <input id="children" name="rooms[][children]" type="number" >
+</div>
+<div class="field">
+  <label for="room_type_id">Room Type : </label>
+  <%= select_tag("rooms[][room_type_id]", options_for_select(@room_types.collect {|r| [ r.name, r.id ] } , 4)) %>
+</div>
