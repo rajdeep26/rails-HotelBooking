@@ -1,7 +1,5 @@
 <h1>New Booking</h1>
 
-<%= logger.debug(params.inspect)%>
-
 <%= form_for(@booking) do |booking| %>
 <% if @booking.errors.any? %>
   <div id="error_explanation">
@@ -44,7 +42,6 @@
     </div>
   <% end %>
 
-  <!-- only if method=add_room -->
   <% if !@no_of_rooms.blank? %>
     <h2>Room Details</h2>
     <% @no_of_rooms.times do |i|%>
