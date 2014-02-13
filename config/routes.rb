@@ -1,13 +1,14 @@
 Hotelbooking::Application.routes.draw do
-  resources :contacts
-  resources :rooms
-  resources :bookings
-  resources :room_types
 
   get 'bookings/:booking_id/rooms' => 'bookings#rooms'
   get 'bookings/:booking_id/rooms/new' => 'bookings#new_room'
   post 'bookings/:booking_id/rooms' => 'bookings#create_room'
-  post 'bookings/new' => 'bookings#add_room'
+  get 'bookings/add_room' => 'bookings#add_room'
+  
+  resources :contacts
+  resources :rooms
+  resources :bookings
+  resources :room_types
 
   # The priority is based upon order of creation:
   # first created -> highest priority.

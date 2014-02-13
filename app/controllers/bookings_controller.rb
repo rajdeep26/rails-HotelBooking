@@ -61,7 +61,7 @@ class BookingsController < ApplicationController
             @room = @booking.rooms.create(new_room)
             if i == params[:rooms].count-1
               logger.info "Completed booking all rooms"
-               redirect_to "/bookings/#{@booking.id}", notice: 'Booking created successfully!'
+              redirect_to "/bookings/#{@booking.id}", notice: 'Booking created successfully!'
             end
           else
             logger.info "#{params[:rooms].count-i} rooms cannot be booked"
@@ -108,14 +108,8 @@ class BookingsController < ApplicationController
 
   # POST /bookings/:booking_id/new
   def add_room
-    @booking = Booking.new(params[:booking])
     @room_types = RoomType.all
-    if !params[:rooms].blank?
-      @no_of_rooms = params[:rooms].count
-    else
-      @no_of_rooms = nil
-    end
-    render 'new'
+    render :partial => "addroom"
   end
 
 end

@@ -1,4 +1,19 @@
 <h1>New Booking</h1>
+<script type="text/javascript">
+  $( document ).ready(function() {
+
+      $("#add-room").click(function () {
+         $.ajax({
+             type: "GET",
+             url: '/bookings/add_room',
+             success: function(data) { 
+              console.log(data)
+              $(".rooms").append(data) }
+         });
+        })
+
+  });
+  </script>
 
 <%= form_for(@booking) do |booking| %>
 <% if @booking.errors.any? %>
@@ -42,32 +57,10 @@
     </div>
   <% end %>
 
-  <!-- only if action=add_room -->
-  <% if !@no_of_rooms.blank? %>
-    <h2>Room Details</h2>
-    <% @no_of_rooms.times do |i|%>
-    <h3>Room <%= i+1 %></h3>
-      <div class="field">
-        <label for="adults">Adult : </label>
-        <input id="adults" name="rooms[][adult]" type="number" value="<%= params[:rooms][i][:adult]%>" >
-      </div>
-      <div class="field">
-        <label for="children">Children : </label>
-        <input id="children" name="rooms[][children]" type="number" value="<%= params[:rooms][i][:children]%>" >
-      </div>
-      <div class="field">
-        <label for="room_type_id">Room Type : </label>
-        <%= select_tag("rooms[][room_type_id]", options_for_select(@room_types.collect {|r| [ r.name, r.id ] } ,  params[:rooms][i][:room_type_id])) %>
-      </div>
-    <% end %>
-  <% end%>
+  <div class="rooms">
+  </div>
 
-  <% if params[:action] == 'add_room' %>
-    <h3 id="newroom" >New Room</h3>
-    <%= render 'addroom'%>
-  <% end %>
-  
-  <button type="submit" formaction="/bookings/new?action=add_room#newroom">Add Room</button>
+  <button type="button" id="add-room" >Add Room</button>
 
   <br/> <br/>
   <div class="actions">
