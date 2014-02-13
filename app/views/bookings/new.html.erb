@@ -3,13 +3,25 @@
   $( document ).ready(function() {
 
       $("#add-room").click(function () {
-         $.ajax({
-             type: "GET",
-             url: '/bookings/add_room',
-             success: function(data) { 
-              console.log(data)
-              $(".rooms").append(data) }
-         });
+        var room = '<div class="room"> \
+                      <div class="field"> \
+                        <label for="adults">Adult : </label> \
+                        <input id="adults" name="rooms[][adult]" type="number" > \
+                      </div> \
+                      <div class="field"> \
+                        <label for="children">Children : </label> \
+                        <input id="children" name="rooms[][children]" type="number" > \
+                      </div> \
+                      <div class="field"> \
+                        <label for="room_type_id">Room Type : </label> \
+                        <select id="rooms__room_type_id" name="rooms[][room_type_id]"> \
+                          <option value="1">Delux</option> \
+                          <option value="4" selected="selected">Standard</option> \
+                          <option value="5">Super Delux</option></select> \
+                      </div> \
+                    </div>'
+         
+        $(".rooms").append(room) 
         })
 
   });
