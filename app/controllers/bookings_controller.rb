@@ -106,11 +106,21 @@ class BookingsController < ApplicationController
     end
   end
 
-  # POST /bookings/:booking_id/new
-  def add_room
+  # POST /bookings/new
+  def new_booking
     @booking = Booking.new(params[:booking])
     @room_types = RoomType.all
-    if !params[:rooms].blank?
+    
+    if params[:rooms].present?
+      if params[:room_id].present?
+        if params[:method] == 'delete_room'
+          if params[:room_id] == 'newroom'
+            params[:rooms].delete_at(params[:rooms].count-1)
+          else
+            params[:rooms].delete_at(params[:room_id].to_i)
+          end
+        end
+      end
       @no_of_rooms = params[:rooms].count
     else
       @no_of_rooms = nil
@@ -119,3 +129,5 @@ class BookingsController < ApplicationController
   end
 
 end
+
+ 
