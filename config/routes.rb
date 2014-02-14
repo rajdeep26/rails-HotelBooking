@@ -3,7 +3,7 @@ Hotelbooking::Application.routes.draw do
   get 'bookings/:booking_id/rooms' => 'bookings#rooms'
   get 'bookings/:booking_id/rooms/new' => 'bookings#new_room'
   post 'bookings/:booking_id/rooms' => 'bookings#create_room'
-  get 'bookings/add_room' => 'bookings#add_room'
+  get 'bookings/add_room/:room_number' => 'bookings#add_room'
   
   resources :contacts
   resources :rooms

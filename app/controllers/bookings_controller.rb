@@ -109,7 +109,7 @@ class BookingsController < ApplicationController
   # POST /bookings/:booking_id/new
   def add_room
     @room_types = RoomType.all
-    render :partial => "addroom"
+    render :partial => "addroom", locals: { room_number: params[:room_number]}
   end
 
 end

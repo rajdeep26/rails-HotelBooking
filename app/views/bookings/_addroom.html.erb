@@ -1,4 +1,5 @@
-<div class="room">
+<div  class=<%= "room" + room_number %>>
+  <h3>Room <%= room_number %></h3>
   <div class="field">
     <label for="adults">Adult : </label>
     <input id="adults" name="rooms[][adult]" type="number" >
@@ -11,4 +12,5 @@
     <label for="room_type_id">Room Type : </label>
     <%= select_tag("rooms[][room_type_id]", options_for_select(@room_types.collect {|r| [ r.name, r.id ] } , 4)) %>
   </div>
+  <button type="button" class="delete_room" data-room-number=<%= "room" + room_number %> >Delete</button>
 </div>

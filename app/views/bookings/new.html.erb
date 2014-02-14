@@ -1,16 +1,21 @@
 <h1>New Booking</h1>
 <script type="text/javascript">
   $( document ).ready(function() {
-
+      var room_count = 0
       $("#add-room").click(function () {
          $.ajax({
              type: "GET",
-             url: '/bookings/add_room',
+             url: '/bookings/add_room/'+ ++room_count,
              success: function(data) { 
               console.log(data)
               $(".rooms").append(data) }
          });
         })
+
+      $(".rooms").on("click", "button", function () {
+        var room = $(this).data("room-number");
+        $("."+room).remove();
+      })
 
   });
   </script>
@@ -60,6 +65,7 @@
   <div class="rooms">
   </div>
 
+  <br/><br/>
   <button type="button" id="add-room" >Add Room</button>
 
   <br/> <br/>
