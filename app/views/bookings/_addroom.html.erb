@@ -11,5 +11,5 @@
     <label for="room_type_id">Room Type : </label>
     <%= select_tag("rooms[][room_type_id]", options_for_select(@room_types.collect {|r| [ r.name, r.id ] } , 4)) %>
   </div>
-  <button type="submit" formaction="/bookings/new?method=delete_room&room_id=newroom">Delete Room</button>
+  <button type="submit" formaction="<%= bookings_new_path(:method=>"delete_room", :room_id => "newroom")%>" >Delete Room</button>
 </div>
