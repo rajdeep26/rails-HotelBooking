@@ -112,13 +112,11 @@ class BookingsController < ApplicationController
     @room_types = RoomType.all
     
     if params[:rooms].present?
-      if params[:room_id].present?
-        if params[:method] == 'delete_room'
-          if params[:room_id] == 'newroom'
-            params[:rooms].delete_at(params[:rooms].count-1)
-          else
-            params[:rooms].delete_at(params[:room_id].to_i)
-          end
+      if params[:room_id].present? and params[:method]== 'delete_room'  
+        if params[:room_id] == 'newroom'
+          params[:rooms].delete_at(params[:rooms].count-1)
+        else
+          params[:rooms].delete_at(params[:room_id].to_i)
         end
       end
       @no_of_rooms = params[:rooms].count
